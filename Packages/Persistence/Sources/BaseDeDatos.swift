@@ -62,8 +62,12 @@ public final class BaseDeDatos: Sendable {
         logger: Logger = Logger(label: "gestiofoto.db.prueba")
     ) async -> String? {
         do {
-            let tls: PostgresConnection.Configuration.TLS =
-                try configuracionTLS(configuracion).map { .require($0) } ?? .disable
+            let tls: PostgresConnection.Configuration.TLS
+            if let configuracionTLS = try configuracionTLS(configuracion) {
+                tls = .require(try NIOSSLContext(configuration: configuracionTLS))
+            } else {
+                tls = .disable
+            }
             var pg = PostgresConnection.Configuration(
                 host: configuracion.servidor,
                 port: configuracion.puerto,
