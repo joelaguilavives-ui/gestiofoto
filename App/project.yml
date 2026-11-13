@@ -1,0 +1,59 @@
+# Proyecto de Xcode generado con XcodeGen (no se escribe a mano el .xcodeproj):
+#   cd App && xcodegen generate && open GestioFoto.xcodeproj
+name: GestioFoto
+options:
+  bundleIdPrefix: es.gestiofoto
+  developmentLanguage: es
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+
+packages:
+  GestioFotoKit:
+    path: ../Packages
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MACOSX_DEPLOYMENT_TARGET: "14.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    # Sin cuenta de Apple Developer: firma «ad hoc» (la primera vez se abre con
+    # clic derecho → Abrir).
+    CODE_SIGN_IDENTITY: "-"
+    CODE_SIGN_STYLE: Manual
+    DEVELOPMENT_TEAM: ""
+    ENABLE_HARDENED_RUNTIME: NO
+    # Sin sandbox: la app necesita las carpetas de trabajos (Finder), lanzar
+    # pg_dump y hablar con PostgreSQL por la red local.
+    ENABLE_APP_SANDBOX: NO
+    SWIFT_EMIT_LOC_STRINGS: YES
+    LOCALIZATION_PREFERS_STRING_CATALOGS: YES
+
+targets:
+  GestioFoto:
+    type: application
+    platform: macOS
+    sources:
+      - path: Sources
+      - path: ../Database/migrations
+        type: folder
+        buildPhase: resources
+      - path: ../Database/seed
+        type: folder
+        buildPhase: resources
+    dependencies:
+      - package: GestioFotoKit
+        product: Domain
+      - package: GestioFotoKit
+        product: Persistence
+      - package: GestioFotoKit
+        product: Integrations
+    settings:
+      base:
+        PRODUCT_NAME: GestioFoto
+        PRODUCT_BUNDLE_IDENTIFIER: es.gestiofoto.app
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: GestioFoto
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.business
+        INFOPLIST_KEY_NSLocalNetworkUsageDescription: "GestioFoto se conecta a la base de datos del Mac principal de la tienda."

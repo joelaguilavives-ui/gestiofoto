@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Paquetes Swift + esquema SQL contra PostgreSQL 16 (Linux: barato y rápido).
+  paquetes:
+    name: Paquetes y base de datos (Linux)
+    runs-on: ubuntu-24.04
+    container: swift:6.1-noble
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: gestiofoto_owner
+          POSTGRES_PASSWORD: owner
+          POSTGRES_DB: gestiofoto_test
+        options: >-
+          --health-cmd "pg_isready -U gestiofoto_owner"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      GESTIOFOTO_TEST_DB_HOST: postgres
+      GESTIOFOTO_TEST_DB_PORT: "5432"
+      GESTIOFOTO_TEST_DB_NAME: gestiofoto_test
+      GESTIOFOTO_TEST_DB_OWNER: gestiofoto_owner
+      GESTIOFOTO_TEST_DB_OWNER_PASSWORD: owner
+      GESTIOFOTO_TEST_DB_APP_PASSWORD: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: Packages/.build
+          key: spm-linux-${{ hashFiles('Packages/Package.resolved', 'Packages/Package.swift') }}
+          restore-keys: spm-linux-
+      - name: Compilar y probar
+        working-directory: Packages
+        run: swift test --parallel
+
+  # App de macOS sin firmar, lista para descargar y probar en los Macs.
+  app:
+    name: App (macOS)
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Xcode
+        run: |
+          sudo xcode-select -s /Applications/Xcode_16.4.app || sudo xcode-select -s /Applications/Xcode_16.app
+          xcodebuild -version
+      - name: XcodeGen
+        run: brew install xcodegen
+      - name: Generar proyecto
+        working-directory: App
+        run: xcodegen generate
+      - name: Compilar
+        working-directory: App
+        run: |
+          set -o pipefail
+          xcodebuild -project GestioFoto.xcodeproj -scheme GestioFoto \
+            -configuration Release -destination 'platform=macOS' \
+            -derivedDataPath build \
+            CODE_SIGN_IDENTITY=- CODE_SIGNING_REQUIRED=NO \
+            build | tee xcodebuild.log | grep -E "error:|warning:|BUILD" || true
+          test -d build/Build/Products/Release/GestioFoto.app
+      - name: Empaquetar
+        working-directory: App/build/Build/Products/Release
+        run: ditto -c -k --keepParent GestioFoto.app "$GITHUB_WORKSPACE/GestioFoto.zip"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: GestioFoto-app
+          path: GestioFoto.zip
+          retention-days: 14
+      - name: Registro de compilación
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcodebuild-log
+          path: App/xcodebuild.log
