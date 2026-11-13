@@ -62,13 +62,18 @@ jobs:
       - name: Compilar
         working-directory: App
         run: |
-          set -o pipefail
-          xcodebuild -project GestioFoto.xcodeproj -scheme GestioFoto \
-            -configuration Release -destination 'platform=macOS' \
-            -derivedDataPath build \
-            CODE_SIGN_IDENTITY=- CODE_SIGNING_REQUIRED=NO \
-            build | tee xcodebuild.log | grep -E "error:|warning:|BUILD" || true
-          test -d build/Build/Products/Release/GestioFoto.app
+          # Falla si falla xcodebuild (la carpeta .app existe aunque no enlace).
+          if ! xcodebuild -project GestioFoto.xcodeproj -scheme GestioFoto \
+               -configuration Release -destination 'platform=macOS' \
+               -derivedDataPath build \
+               CODE_SIGN_IDENTITY=- CODE_SIGNING_REQUIRED=NO \
+               build > xcodebuild.log 2>&1; then
+            grep -E "error:" xcodebuild.log | sort -u | head -80
+            tail -20 xcodebuild.log
+            exit 1
+          fi
+          grep -E "warning:" xcodebuild.log | grep -v "/SourcePackages/" | sort -u | head -80 || true
+          test -x build/Build/Products/Release/GestioFoto.app/Contents/MacOS/GestioFoto
       - name: Empaquetar
         working-directory: App/build/Build/Products/Release
         run: ditto -c -k --keepParent GestioFoto.app "$GITHUB_WORKSPACE/GestioFoto.zip"
