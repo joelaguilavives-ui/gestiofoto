@@ -50,3 +50,10 @@ Se puede volver a ejecutar sin perder datos, por ejemplo para cambiar las contra
 Si la copia falla al escribir en un disco externo, da **Acceso total al disco** a `/bin/bash` en Ajustes del Sistema → Privacidad y seguridad.
 
 Registro de las copias nocturnas: `~/Library/Application Support/GestioFoto/logs/copia.log`.
+
+## Mac de pruebas (portátil)
+
+- Para empezar de cero con la base vacía: `bash Tools/setup_server/reiniciar_base.sh`.
+- Al terminar las pruebas, para dejar el portátil limpio: `bash Tools/setup_server/desinstalar.sh`. Quita GestioFoto, la copia nocturna, las copias y **Postgres.app con todos sus datos**. Si Postgres.app tiene otras bases que no son de GestioFoto, no la quita y avisa.
+
+Los dos scripts piden escribir BORRAR. No deben usarse nunca en el Mac de la tienda.

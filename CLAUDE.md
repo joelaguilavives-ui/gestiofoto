@@ -26,8 +26,19 @@ fichero es su apartado 10 más las decisiones tomadas después.
   dependencia de la app.
 - Los minutos de runner macOS cuestan 10× en repos privados: compilar macOS solo
   en push a `main` y en PR.
-- Sin cuenta Apple Developer la app sale sin firmar (primera apertura: clic
-  derecho → Abrir).
+- Sin cuenta Apple Developer la app sale sin firmar (primera apertura: en macOS
+  15+, Ajustes del Sistema → Privacidad y seguridad → «Abrir igualmente»; en
+  macOS 14, clic derecho → Abrir).
+- **Pruebas del titular en un portátil Mac**, no en la tienda: el portátil hace
+  de Mac principal y el segundo Mac se simula (conexión por nombre de red,
+  segunda instancia con `open -n`). Lo que exige dos Macs reales queda en la
+  lista de comprobación como pendiente para la instalación en la tienda.
+  `Tools/setup_server/reiniciar_base.sh` vacía la base de pruebas (p. ej. tras
+  cambiar una migración aún no aplicada en la tienda). **Al terminar, el
+  portátil debe quedar limpio**: `desinstalar.sh` quita GestioFoto, copias,
+  launchd y Postgres.app con sus datos (si no hay bases ajenas). Todo lo que se
+  añada en fases nuevas (ficheros, permisos, agentes) debe añadirse también a
+  ese script.
 - Solo comprobable en un Mac real: etiquetas del Finder (también en el NAS),
   Llavero, agente launchd de copias, impresión, trabajo con dos Macs. Marcarlo en
   la lista de comprobación de cada fase.
@@ -55,7 +66,8 @@ Docs/                preguntas para el titular, listas de comprobación por fase
 Tools/
   migrate_excel/     script Python de migración + informe (fase 2)
   setup_server/      instalación de PostgreSQL y de las copias en el Mac
-                     principal (setup.sh, backup.sh, restore.sh)
+                     principal (setup.sh, backup.sh, restore.sh) y, solo
+                     para pruebas, reiniciar_base.sh y desinstalar.sh
 .github/workflows/   CI: paquetes + PostgreSQL 16 en Linux; app en macOS
 CLAUDE.md
 ```
