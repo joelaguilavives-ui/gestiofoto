@@ -66,6 +66,7 @@ jobs:
           if ! xcodebuild -project GestioFoto.xcodeproj -scheme GestioFoto \
                -configuration Release -destination 'platform=macOS' \
                -derivedDataPath build \
+               ARCHS="arm64 x86_64" ONLY_ACTIVE_ARCH=NO \
                CODE_SIGN_IDENTITY=- CODE_SIGNING_REQUIRED=NO \
                build > xcodebuild.log 2>&1; then
             grep -E "error:" xcodebuild.log | sort -u | head -80
@@ -74,6 +75,9 @@ jobs:
           fi
           grep -E "warning:" xcodebuild.log | grep -v "/SourcePackages/" | sort -u | head -80 || true
           test -x build/Build/Products/Release/GestioFoto.app/Contents/MacOS/GestioFoto
+          # App universal: Apple Silicon e Intel
+          lipo -info build/Build/Products/Release/GestioFoto.app/Contents/MacOS/GestioFoto
+          lipo build/Build/Products/Release/GestioFoto.app/Contents/MacOS/GestioFoto -verify_arch arm64 x86_64
       - name: Empaquetar
         working-directory: App/build/Build/Products/Release
         run: ditto -c -k --keepParent GestioFoto.app "$GITHUB_WORKSPACE/GestioFoto.zip"
