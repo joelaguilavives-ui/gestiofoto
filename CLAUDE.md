@@ -2,8 +2,14 @@
 
 App nativa de macOS para la tienda de fotografía: sustituye al Excel
 `INVENTARI_SOBRES_ENTREGA`. La especificación completa está en
-`Especificación – App de gestión Fotografía (macOS).pdf` (raíz del repo). Este
-fichero es su apartado 10 más las decisiones tomadas después.
+`Especificación – App de gestión Fotografía (macOS).pdf`, en la carpeta local del
+proyecto; **no se sube al repositorio** (es público; el PDF está en
+`.gitignore`). Este fichero es su apartado 10 más las decisiones tomadas después.
+
+El repositorio de GitHub es **público**: no subir nunca datos reales de la tienda
+(Excel, copias `.dump`, clientes), contraseñas ni documentos internos. Los
+commits usan el email privado de GitHub (`…@users.noreply.github.com`,
+configurado en este repositorio).
 
 ## Forma de trabajar
 

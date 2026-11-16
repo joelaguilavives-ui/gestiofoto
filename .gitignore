@@ -13,3 +13,5 @@ __pycache__/
 *.xltm
 *.xlsx
 *.dump
+# especificación interna: solo en la carpeta local, no en el repositorio público
+/Especificaci*.pdf
