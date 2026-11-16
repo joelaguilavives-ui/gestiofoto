@@ -1,5 +1,7 @@
 # Preparar el Mac principal
 
+> Para el portátil de pruebas hay una guía más detallada: [`Docs/guia_pruebas_portatil.md`](../../Docs/guia_pruebas_portatil.md).
+
 Se hace una sola vez, en el Mac del mostrador, que es el que guarda los datos.
 
 ## 1. Postgres.app

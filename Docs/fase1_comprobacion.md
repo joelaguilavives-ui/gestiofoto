@@ -8,14 +8,7 @@ La fase 1 es la base técnica: la base de datos, los usuarios, la configuración
 
 ## 1. Preparar el portátil
 
-1. **Descargar el código.** El repositorio es privado: entra en GitHub con tu cuenta y usa **Code → Download ZIP**. Mejor así que con `git clone`, que obligaría a instalar las herramientas de desarrollo de Apple en el portátil.
-2. **Descargar la app.** En GitHub → **Actions**, abre la última ejecución en verde y, en **Artifacts**, descarga `GestioFoto-app`. Descomprímela y mueve `GestioFoto.app` a Aplicaciones.
-3. **Primera apertura.** La app no está firmada:
-   - En macOS 15 (Sequoia) o posterior: ábrela, cierra el aviso y ve a **Ajustes del Sistema → Privacidad y seguridad → «Abrir igualmente»**.
-   - En macOS 14: **clic derecho → Abrir**.
-   - Alternativa en Terminal: `xattr -dr com.apple.quarantine /Applications/GestioFoto.app`
-4. **Postgres.app y el script.** Instala Postgres.app y ejecuta `bash Tools/setup_server/setup.sh`. Los pasos están en `Tools/setup_server/README.md`. Para las pruebas, la carpeta de copias puede ser `~/Documents/Copias GestioFoto`.
-5. **Conectar.** Abre GestioFoto, marca «Este es el Mac principal», escribe el nombre de red que muestra el script, elige el `server.crt` y pon las dos contraseñas. Crea el primer usuario titular.
+Sigue la guía paso a paso [`guia_pruebas_portatil.md`](guia_pruebas_portatil.md): descargar el proyecto y la app (sin cuenta de GitHub), instalar Postgres.app, ejecutar `setup.sh`, conectar y crear el primer titular.
 
 ## 2. Criterios de la fase (PDF §9), adaptados a un solo Mac
 
